@@ -28,7 +28,8 @@ const App: React.FC = () => {
     teamSize: '',
     website: '',
     socials: '',
-    bookingTimeline: ''
+    bookingTimeline: '',
+    otherIndustry: ''
   })
 
   const [isEditionOpen, setIsEditionOpen] = useState(false)
@@ -36,9 +37,9 @@ const App: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const editions = [
-    'Edition 1 - April 2026',
-    'Edition 2 - May 2026',
-    'Edition 3 - June 2026'
+    '2nd May 2026',
+    '3rd May 2025'
+
   ]
 
   const industries = [
@@ -53,13 +54,16 @@ const App: React.FC = () => {
   ]
 
   const challenges: Option[] = [
-    { id: '1', letter: 'A', text: 'Cash flow hacks & bootstrapping tips' },
-    { id: '2', letter: 'B', text: 'Hiring talent in Odisha / Bhubaneswar' },
-    { id: '3', letter: 'C', text: 'Founder burnout recovery tools' },
-    { id: '4', letter: 'D', text: 'Peer intros for collaborators/partners' },
-    { id: '5', letter: 'E', text: 'Distribution & customer acquisition wins' },
-    { id: '6', letter: 'F', text: 'Team retention strategies' },
-    { id: '7', letter: 'G', text: 'Decision fatigue fixes / Wellness resets for focus' }
+    { id: '1', letter: 'A', text: 'Mental overload / decision fatigue' },
+    { id: '2', letter: 'B', text: 'Feeling constantly “on” with no real reset' },
+    { id: '3', letter: 'C', text: 'Pressure of leading a team' },
+    { id: '4', letter: 'D', text: 'Burnout creeping in' },
+    { id: '5', letter: 'E', text: 'Lack of clarity or direction' },
+    { id: '6', letter: 'F', text: 'Trying to build more intentional routines' },
+    { id: '7', letter: 'G', text: 'Navigating uncertainty in key decisions' },
+    { id: '8', letter: 'H', text: 'Looking to connect with the right kind of founders' },
+    { id: '9', letter: 'I', text: 'I’m not sure, but something feels off' },
+
   ]
 
   const peeves: Option[] = [
@@ -143,7 +147,7 @@ const App: React.FC = () => {
           peeves: (formData.peeves || []).join(", "),
           motivation: (formData.motivation || []).join(", "),
           celebrating: formData.celebrating,
-          industry: formData.industry,
+          industry: formData.industry === 'Other' ? `Other: ${formData.otherIndustry}` : formData.industry,
           teamsize: formData.teamSize,
           website: formData.website,
           socials: formData.socials,
@@ -157,7 +161,7 @@ const App: React.FC = () => {
       }
 
       alert("✨ Success! Your application has been submitted.");
-      
+
     } catch (error: any) {
       console.error("Critical submission error:", error);
       alert("❌ Submission Failed: " + error.message);
@@ -273,9 +277,9 @@ const App: React.FC = () => {
       <section className="section" id="challenges-section">
         <div className="section-header">
           <span className="section-number">3</span>
-          <h2 className="section-title">What are you looking for? *</h2>
+          <h2 className="section-title">What are you currently navigating?</h2>
         </div>
-        <p className="section-description">Select the top challenges you're facing or outcomes you want from this 3-hour founder reset. Be real! Our 16 founders solve what others dodge.</p>
+        <p className="section-description">Be honest. This helps us curate the right room.</p>
         <p className="sub-instruction">Choose as many as you like</p>
         <div className="mc-list">
           {challenges.map(c => (
@@ -381,7 +385,7 @@ const App: React.FC = () => {
                     <div
                       key={i}
                       className={`dropdown-item ${formData.industry === i ? 'selected' : ''}`}
-                      onClick={() => { setFormData({ ...formData, industry: i }); setIsIndustryOpen(false) }}
+                      onClick={() => { setFormData({ ...formData, industry: i, otherIndustry: i === 'Other' ? formData.otherIndustry : '' }); setIsIndustryOpen(false) }}
                     >
                       {i}
                     </div>
@@ -389,6 +393,21 @@ const App: React.FC = () => {
                 </div>
               )}
             </div>
+
+            {/* Conditional Other Industry Input */}
+            {formData.industry === 'Other' && (
+              <div className="input-group" style={{ marginTop: '1.5rem', animation: 'fadeIn 0.3s ease-out' }}>
+                <label className="label" style={{ fontSize: '0.9rem', fontWeight: '600' }}>Please specify your industry *</label>
+                <input
+                  type="text"
+                  className="input-underline"
+                  placeholder="Tell us what you are building..."
+                  value={formData.otherIndustry}
+                  onChange={e => setFormData({ ...formData, otherIndustry: e.target.value })}
+                  autoFocus
+                />
+              </div>
+            )}
           </div>
 
           {/* Team Size - Single Select */}

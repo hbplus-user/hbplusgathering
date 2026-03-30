@@ -190,7 +190,6 @@ const App: React.FC = () => {
           .eq('id', applicationId);
 
         if (error) throw error;
-        alert("✨ Success! Your application has been submitted.");
         setStep(9);
       } else {
         const updateData: any = {};

@@ -561,7 +561,7 @@ const App: React.FC = () => {
             style={{ marginTop: '3rem' }}
             onClick={() => window.location.reload()}
           >
-            Start New Application
+            Close
           </button>
         </section>
       )}

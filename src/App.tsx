@@ -242,12 +242,12 @@ const App: React.FC = () => {
       <header className="header">
         <h1>The Gathering: Founder's Edition</h1>
         <p className="subtitle">Fill this out and we'll handle the rest.</p>
-        
+
         {step <= 8 && (
           <div className="progress-bar-container">
             <div className="progress-bar-bg">
-              <div 
-                className="progress-bar-fill" 
+              <div
+                className="progress-bar-fill"
                 style={{ width: `${(step / 8) * 100}%` }}
               ></div>
             </div>
@@ -555,9 +555,9 @@ const App: React.FC = () => {
         <section className="section success-page" style={{ textAlign: 'center', marginTop: '4rem' }}>
           <div style={{ fontSize: '4rem', marginBottom: '2rem' }}>✨</div>
           <h2 className="section-title" style={{ marginBottom: '1.5rem', marginLeft: 0 }}>Application Received!</h2>
-          <p className="subtitle" style={{ color: 'var(--text-secondary)' }}>We've received your details. Our team will review your application and get back to you soon.</p>
-          <button 
-            className="submit-small-btn" 
+          <p className="subtitle" style={{ color: 'var(--text-secondary)' }}>No lectures. Real peer fixes. The Gathering.</p>
+          <button
+            className="submit-small-btn"
             style={{ marginTop: '3rem' }}
             onClick={() => window.location.reload()}
           >

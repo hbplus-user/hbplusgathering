@@ -357,7 +357,7 @@ const App: React.FC = () => {
           </div>
           <p className="section-description">Be honest. This helps us curate the right room.</p>
           <p className="sub-instruction">Choose as many as you like</p>
-          <div className="mc-list">
+          <div className="mc-grid">
             {challenges.map(c => (
               <div
                 key={c.id}
@@ -403,7 +403,7 @@ const App: React.FC = () => {
           </div>
           <p className="section-description">Which part of The Gathering excites you most? We lean into your top interest for circle prompts and energy!</p>
           <p className="sub-instruction">Choose as many as you like</p>
-          <div className="mc-list">
+          <div className="mc-grid">
             {motivations.map(m => (
               <div
                 key={m.id}
@@ -490,7 +490,7 @@ const App: React.FC = () => {
 
             <div className="inner-input-item">
               <label className="dropdown-label" style={{ fontSize: '1rem', fontWeight: '700', marginBottom: '1.5rem' }}>Your Squad Status - <span style={{ fontWeight: '400', color: 'var(--text-muted)', fontStyle: 'italic' }}>Team Size *</span></label>
-              <div className="mc-list" style={{ marginLeft: 0 }}>
+              <div className="mc-grid" style={{ marginLeft: 0 }}>
                 {teamSizes.map(t => (
                   <div
                     key={t.id}
@@ -536,7 +536,7 @@ const App: React.FC = () => {
             <h2 className="section-title">If invited, when would you book? *</h2>
           </div>
           <p className="section-description" style={{ fontStyle: 'normal' }}>How quickly can you commit? Tell us how excited you are!</p>
-          <div className="mc-list">
+          <div className="mc-grid">
             {bookingDeadlines.map(b => (
               <div
                 key={b.id}
@@ -552,7 +552,7 @@ const App: React.FC = () => {
       )}
 
       {step === 9 && (
-        <section className="section success-page" style={{ textAlign: 'center', marginTop: '4rem' }}>
+        <section className="section success-page" style={{ textAlign: 'center', marginTop: '2rem' }}>
           <div style={{ fontSize: '4rem', marginBottom: '2rem' }}>✨</div>
           <h2 className="section-title" style={{ marginBottom: '1.5rem', marginLeft: 0 }}>Application Received!</h2>
           <p className="subtitle" style={{ color: 'var(--text-secondary)' }}>No lectures. Real peer fixes. The Gathering.</p>
@@ -567,7 +567,7 @@ const App: React.FC = () => {
       )}
 
       {step <= 8 && (
-        <footer style={{ marginTop: '4rem', display: 'flex', justifyContent: 'space-between', paddingBottom: '6rem', marginLeft: 'var(--content-indent)', maxWidth: '600px' }}>
+        <footer style={{ marginTop: '2rem', display: 'flex', justifyContent: 'space-between', paddingBottom: '6rem', marginLeft: 'var(--content-indent)', maxWidth: '600px' }}>
           <button
             className="back-btn"
             disabled={step === 1 || isSubmitting}

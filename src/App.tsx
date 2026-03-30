@@ -11,37 +11,152 @@ if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
 
 const supabase = createClient(SUPABASE_URL || "", SUPABASE_ANON_KEY || "");
 
+const STORAGE_KEY = 'the_gathering_form_progress';
+
 interface Option {
   id: string
   letter: string
   text: string
 }
 
+interface FormData {
+  firstName: string;
+  lastName: string;
+  phone: string;
+  email: string;
+  edition: string;
+  challenges: string[];
+  peeves: string[];
+  motivation: string[];
+  celebrating: string;
+  industry: string;
+  teamSize: string;
+  website: string;
+  socials: string;
+  bookingTimeline: string;
+  otherIndustry: string;
+}
+
 const App: React.FC = () => {
-  const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    phone: '',
-    email: '',
-    edition: 'Type or select an option',
-    challenges: [] as string[],
-    peeves: [] as string[],
-    motivation: [] as string[],
-    celebrating: '',
-    industry: 'Type or select an option',
-    teamSize: '',
-    website: '',
-    socials: '',
-    bookingTimeline: '',
-    otherIndustry: ''
+  const [formData, setFormData] = useState(() => {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (parsed.formData) return parsed.formData;
+      } catch (e) {
+        console.error("Error parsing saved formData", e);
+      }
+    }
+    return {
+      firstName: '',
+      lastName: '',
+      phone: '',
+      email: '',
+      edition: 'Type or select an option',
+      challenges: [] as string[],
+      peeves: [] as string[],
+      motivation: [] as string[],
+      celebrating: '',
+      industry: 'Type or select an option',
+      teamSize: '',
+      website: '',
+      socials: '',
+      bookingTimeline: '',
+      otherIndustry: ''
+    };
   })
 
   const [isEditionOpen, setIsEditionOpen] = useState(false)
   const [isIndustryOpen, setIsIndustryOpen] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [step, setStep] = useState(1)
-  const [applicationId, setApplicationId] = useState<string | null>(null)
+  const [step, setStep] = useState<number>(() => {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        return parsed.step || 1;
+      } catch (e) {
+        return 1;
+      }
+    }
+    return 1;
+  })
+  const [applicationId, setApplicationId] = useState<string | null>(() => {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        return parsed.applicationId || null;
+      } catch (e) {
+        return null;
+      }
+    }
+    return null;
+  })
   const [showError, setShowError] = useState(false)
+  const [isResuming, setIsResuming] = useState(false)
+
+  // --- PERSISTENCE LOGIC ---
+
+  // Handle Supabase Sync and Toast on Mount
+  useEffect(() => {
+    if (applicationId) {
+      syncWithSupabase(applicationId);
+    }
+    
+    if (localStorage.getItem(STORAGE_KEY)) {
+      setIsResuming(true);
+    }
+  }, []);
+
+  // Sync with Supabase if the user has an existing record
+  const syncWithSupabase = async (id: string | null) => {
+    if (!id) return;
+    try {
+      const { data, error } = await supabase
+        .from('applications')
+        .select('*')
+        .eq('id', id)
+        .single();
+
+      if (data && !error) {
+        setFormData((prev: FormData) => ({
+          ...prev,
+          firstName: data.firstname || prev.firstName,
+          lastName: data.lastname || prev.lastName,
+          phone: data.phone || prev.phone,
+          email: data.email || prev.email,
+          edition: data.edition || prev.edition,
+          challenges: data.challenges ? data.challenges.split(", ") : prev.challenges,
+          peeves: data.peeves ? data.peeves.split(", ") : prev.peeves,
+          motivation: data.motivation ? data.motivation.split(", ") : prev.motivation,
+          celebrating: data.celebrating || prev.celebrating,
+          industry: data.industry ? (data.industry.startsWith("Other:") ? "Other" : data.industry) : prev.industry,
+          otherIndustry: data.industry?.startsWith("Other:") ? data.industry.replace("Other: ", "") : prev.otherIndustry,
+          teamSize: data.teamsize || prev.teamSize,
+          website: data.website || prev.website,
+          socials: data.socials || prev.socials,
+          bookingTimeline: data.bookingtimeline || prev.bookingTimeline
+        }));
+      }
+    } catch (err) {
+      console.warn("Could not sync with Supabase on resume", err);
+    }
+  };
+
+  // Save to Local Storage whenever state changes
+  useEffect(() => {
+    if (step < 9) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({
+        formData,
+        step,
+        applicationId
+      }));
+    } else {
+      localStorage.removeItem(STORAGE_KEY);
+    }
+  }, [formData, step, applicationId]);
 
   const editions = [
     '2nd May 2026',
@@ -107,28 +222,28 @@ const App: React.FC = () => {
   ]
 
   const toggleChallenge = (text: string) => {
-    setFormData(prev => ({
+    setFormData((prev: FormData) => ({
       ...prev,
       challenges: prev.challenges.includes(text)
-        ? prev.challenges.filter(c => c !== text)
+        ? prev.challenges.filter((c: string) => c !== text)
         : [...prev.challenges, text]
     }))
   }
 
   const togglePeeve = (text: string) => {
-    setFormData(prev => ({
+    setFormData((prev: FormData) => ({
       ...prev,
       peeves: prev.peeves.includes(text)
-        ? prev.peeves.filter(p => p !== text)
+        ? prev.peeves.filter((p: string) => p !== text)
         : [...prev.peeves, text]
     }))
   }
 
   const toggleMotivation = (text: string) => {
-    setFormData(prev => ({
+    setFormData((prev: FormData) => ({
       ...prev,
       motivation: prev.motivation.includes(text)
-        ? prev.motivation.filter(m => m !== text)
+        ? prev.motivation.filter((m: string) => m !== text)
         : [...prev.motivation, text]
     }))
   }
@@ -180,7 +295,7 @@ const App: React.FC = () => {
 
         if (error) throw error;
         if (data) setApplicationId(data.id);
-        setStep(prev => prev + 1);
+        setStep((prev: number) => prev + 1);
       } else if (step === 8) {
         const { error } = await supabase
           .from('applications')
@@ -190,6 +305,7 @@ const App: React.FC = () => {
           .eq('id', applicationId);
 
         if (error) throw error;
+        localStorage.removeItem(STORAGE_KEY);
         setStep(9);
       } else {
         const updateData: any = {};
@@ -211,7 +327,7 @@ const App: React.FC = () => {
           .eq('id', applicationId);
 
         if (error) throw error;
-        setStep(prev => prev + 1);
+        setStep((prev: number) => prev + 1);
       }
     } catch (error: any) {
       console.error("Supabase error:", error);
@@ -222,7 +338,7 @@ const App: React.FC = () => {
   }
 
   const handleBack = () => {
-    if (step > 1) setStep(prev => prev - 1);
+    if (step > 1) setStep((prev: number) => prev - 1);
   }
 
   useEffect(() => {
@@ -239,6 +355,23 @@ const App: React.FC = () => {
 
   return (
     <main className="form-container">
+      {isResuming && step < 9 && (
+        <div className="resume-toast" style={{
+          position: 'fixed',
+          top: '20px',
+          right: '20px',
+          background: 'rgba(255, 255, 255, 0.1)',
+          backdropFilter: 'blur(10px)',
+          padding: '10px 20px',
+          borderRadius: '20px',
+          fontSize: '0.8rem',
+          border: '1px solid rgba(255,255,255,0.2)',
+          zIndex: 1000,
+          animation: 'fadeOut 5s forwards'
+        }}>
+          ✨ Resumed from your last visit
+        </div>
+      )}
       <header className="header">
         <h1>The Gathering: Founder's Edition</h1>
         <p className="subtitle">Fill this out and we'll handle the rest.</p>

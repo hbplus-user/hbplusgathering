@@ -356,8 +356,9 @@ h1 {
   background-color: transparent;
   color: white;
   border: 1px solid #fff;
-  padding: 0.8rem 2.5rem;
+  padding: 0.8rem 2rem;
   border-radius: 8px;
+  min-width: 120px;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
@@ -375,6 +376,7 @@ h1 {
   border: 1px solid var(--border-color);
   padding: 0.8rem 2rem;
   border-radius: 8px;
+  min-width: 120px;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;

@@ -567,7 +567,7 @@ const App: React.FC = () => {
       )}
 
       {step <= 8 && (
-        <footer style={{ marginTop: '2rem', display: 'flex', justifyContent: 'space-between', paddingBottom: '6rem', marginLeft: 'var(--content-indent)', maxWidth: '600px' }}>
+        <footer style={{ marginTop: '2rem', display: 'flex', justifyContent: 'space-between', paddingBottom: '6rem', marginLeft: 'var(--content-indent)' }}>
           <button
             className="back-btn"
             disabled={step === 1 || isSubmitting}

@@ -104,7 +104,7 @@ const App: React.FC = () => {
     if (applicationId) {
       syncWithSupabase(applicationId);
     }
-    
+
     if (localStorage.getItem(STORAGE_KEY)) {
       setIsResuming(true);
     }
@@ -160,7 +160,7 @@ const App: React.FC = () => {
 
   const editions = [
     '2nd May 2026',
-    '3rd May 2025'
+    '3rd May 2026'
   ]
 
   const industries = [

@@ -47,11 +47,11 @@ body::before {
 #root {
   max-width: 900px;
   margin: 0 auto;
-  padding: 0.5rem 1rem;
+  padding: 4rem 1rem;
 }
 
 .header {
-  margin-bottom: 1rem;
+  margin-bottom: 2rem;
 }
 
 h1 {
@@ -404,7 +404,7 @@ h1 {
 
 @media (max-width: 640px) {
   #root {
-    padding: 0.75rem;
+    padding: 2rem 1rem;
   }
   .mc-grid {
     grid-template-columns: 1fr;

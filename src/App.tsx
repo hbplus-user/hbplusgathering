@@ -75,7 +75,8 @@ const App: React.FC = () => {
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
-        return parsed.step || 1;
+        const val = parsed.step || 1;
+        return val > 8 ? 1 : val;
       } catch (e) {
         return 1;
       }
@@ -145,9 +146,8 @@ const App: React.FC = () => {
     }
   };
 
-  // Save to Local Storage whenever state changes
   useEffect(() => {
-    if (step < 9) {
+    if (step <= 8) {
       localStorage.setItem(STORAGE_KEY, JSON.stringify({
         formData,
         step,
@@ -306,7 +306,7 @@ const App: React.FC = () => {
 
         if (error) throw error;
         localStorage.removeItem(STORAGE_KEY);
-        setStep(9);
+        window.location.href = 'https://hbplus.fit/thankyou';
       } else {
         const updateData: any = {};
         if (step === 2) updateData.edition = formData.edition;
@@ -355,7 +355,7 @@ const App: React.FC = () => {
 
   return (
     <main className="form-container">
-      {isResuming && step < 9 && (
+      {isResuming && step <= 8 && (
         <div className="resume-toast" style={{
           position: 'fixed',
           top: '20px',
@@ -684,20 +684,6 @@ const App: React.FC = () => {
         </section>
       )}
 
-      {step === 9 && (
-        <section className="section success-page" style={{ textAlign: 'center', marginTop: '2rem' }}>
-          <div style={{ fontSize: '4rem', marginBottom: '2rem' }}>✨</div>
-          <h2 className="section-title" style={{ marginBottom: '1.5rem', marginLeft: 0 }}>Application Received!</h2>
-          <p className="subtitle" style={{ color: 'var(--text-secondary)' }}>No lectures. Real peer fixes. The Gathering.</p>
-          <button
-            className="submit-small-btn"
-            style={{ marginTop: '3rem' }}
-            onClick={() => window.location.reload()}
-          >
-            Close
-          </button>
-        </section>
-      )}
 
       {step <= 8 && (
         <footer style={{ marginTop: '2rem', display: 'flex', justifyContent: 'center', gap: '2rem', paddingBottom: '6rem' }}>
